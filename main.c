@@ -33,9 +33,10 @@
 
 #include <jo/jo.h>
 #include "main.h"
+#include "assets.h"
 
 GAME g_Game = {0};
-//ASSETS g_Assets = {0};
+ASSETS g_Assets = {0};
 //PLAYER g_Players[MAX_PLAYERS] = {0};
 
 // global callbacks, not tied to a specific game state
@@ -53,7 +54,7 @@ void jo_main(void)
     //
 
     //loadPCMAssets();
-    //loadSprites();
+    loadSpriteAssets();
 
     /*
     jo_core_add_callback(ssmtfLogo_input);
@@ -75,8 +76,10 @@ void jo_main(void)
     jo_core_add_callback(changeHud_input);
 
     jo_core_add_callback(debug_input);
-    jo_core_add_callback(debug_draw);
+
     */
+
+    jo_core_add_callback(debug_draw);
 
     // ABC + start handler
     jo_core_set_restart_game_callback(abcStart_callback);
@@ -116,6 +119,7 @@ void abcStart_callback(void)
 // this can occur at any time
 void debug_input(void)
 {
+
     // player 1 press start
     if (jo_is_pad1_key_pressed(JO_KEY_Z))
     {
@@ -140,12 +144,15 @@ void debug_input(void)
 // display FPS and polygon count
 void debug_draw(void)
 {
+    jo_sprite_draw3D(g_Assets.title, 0, 0, 500);
+
+
     if(g_Game.debug == 0)
     {
         return;
     }
 
-    jo_printf(0, 27, "Polys: %d    ", jo_3d_get_polygon_count());
+    //jo_printf(0, 27, "Polys: %d    ", jo_3d_get_polygon_count());
 
     jo_fixed_point_time();
     slPrintFX(delta_time, slLocate(2,28));
