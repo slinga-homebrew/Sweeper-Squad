@@ -1,4 +1,9 @@
 /*
+**   Sweeper Squad - 12 player Minesweeper clone by Slinga
+*/
+
+
+/*
 ** Jo Sega Saturn Engine
 ** Copyright (c) 2012-2017, Johannes Fetz (johannesfetz@gmail.com)
 ** All rights reserved.
@@ -27,15 +32,122 @@
 */
 
 #include <jo/jo.h>
+#include "main.h"
 
-void my_draw(void)
-{
+GAME g_Game = {0};
+//ASSETS g_Assets = {0};
+//PLAYER g_Players[MAX_PLAYERS] = {0};
 
-}
+// global callbacks, not tied to a specific game state
+void abcStart_callback(void);
+void debug_input(void);
+void debug_draw(void);
 
+// sets up callback and starts game loop
 void jo_main(void)
 {
-    jo_core_init(JO_COLOR_Black);
-    jo_core_add_callback(my_draw);
+    jo_core_init(JO_COLOR_Gray);
+
+    //
+    // load\init game assets
+    //
+
+    //loadPCMAssets();
+    //loadSprites();
+
+    /*
+    jo_core_add_callback(ssmtfLogo_input);
+    jo_core_add_callback(ssmtfLogo_update);
+    jo_core_add_callback(ssmtfLogo_draw);
+
+    jo_core_add_callback(titleScreen_input);
+    jo_core_add_callback(titleScreen_update);
+    jo_core_add_callback(titleScreen_draw);
+
+    jo_core_add_callback(gameplay_input);
+    jo_core_add_callback(gameplay_update);
+    jo_core_add_callback(gameplay_draw);
+
+    jo_core_add_callback(pause_input);
+    jo_core_add_callback(pause_draw);
+
+    // misc callbacks
+    jo_core_add_callback(changeHud_input);
+
+    jo_core_add_callback(debug_input);
+    jo_core_add_callback(debug_draw);
+    */
+
+    // ABC + start handler
+    jo_core_set_restart_game_callback(abcStart_callback);
+
+    // transition to first game state
+    //transitionState(GAME_STATE_SSMTF_LOGO);
+
+    // game loop
     jo_core_run();
+}
+
+// returns to title screen if player one presses ABC+Start
+void abcStart_callback(void)
+{
+    if(g_Game.gameState == GAME_STATE_UNINITIALIZED)
+    {
+        // ignore callback if not yet initialized
+        return;
+    }
+
+    // don't do anything if already at the title screen
+    if(g_Game.gameState != GAME_STATE_TITLE_SCREEN)
+    {
+        g_Game.input.pressedStart = true;
+        g_Game.input.pressedAC = true;
+        g_Game.input.pressedB = true;
+
+        transitionState(GAME_STATE_TITLE_SCREEN);
+
+        return;
+    }
+
+    return;
+}
+
+// check if player 1 pressed Z to change the debug level
+// this can occur at any time
+void debug_input(void)
+{
+    // player 1 press start
+    if (jo_is_pad1_key_pressed(JO_KEY_Z))
+    {
+        if(g_Game.input.pressedZ == false)
+        {
+            g_Game.debug++;
+
+            if(g_Game.debug > MAX_DEBUG_LEVEL)
+            {
+                g_Game.debug = 0;
+                jo_clear_screen();
+            }
+        }
+        g_Game.input.pressedZ = true;
+    }
+    else
+    {
+        g_Game.input.pressedZ = false;
+    }
+}
+
+// display FPS and polygon count
+void debug_draw(void)
+{
+    if(g_Game.debug == 0)
+    {
+        return;
+    }
+
+    jo_printf(0, 27, "Polys: %d    ", jo_3d_get_polygon_count());
+
+    jo_fixed_point_time();
+    slPrintFX(delta_time, slLocate(2,28));
+    jo_printf(0, 28, "Frame:");
 }
