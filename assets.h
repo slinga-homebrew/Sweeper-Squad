@@ -9,20 +9,27 @@ typedef struct _assets
     // title screen
     int title;
 
+    // grid
+    int closed;
+    int open;
+
     // mouse cursors
+    int cursors;
 
     // bombs
 
     // digits
 
     // flags
+    int flags;
 
 
 
 
 } ASSETS, *PASSETS;
 
-// initialize polygon assets
-void loadSpriteAssets();
-
 extern ASSETS g_Assets;
+
+// initialize polygon assets
+void loadAssets(void);
+//jo_palette* setGamePalette(void);

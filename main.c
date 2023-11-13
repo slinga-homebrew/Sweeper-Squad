@@ -37,6 +37,10 @@
 
 GAME g_Game = {0};
 ASSETS g_Assets = {0};
+
+extern Uint16 VDP2_CRAOFB;
+
+
 //PLAYER g_Players[MAX_PLAYERS] = {0};
 
 // global callbacks, not tied to a specific game state
@@ -53,8 +57,12 @@ void jo_main(void)
     // load\init game assets
     //
 
-    //loadPCMAssets();
-    loadSpriteAssets();
+    #if defined(JO_480i)
+        slZoomNbg0(toFIXED(0.5), toFIXED(0.5));
+        VDP2_CRAOFB = 0x0010 | (VDP2_CRAOFB & 0xFF0F);
+    #endif
+
+    loadAssets();
 
     /*
     jo_core_add_callback(ssmtfLogo_input);
@@ -144,7 +152,30 @@ void debug_input(void)
 // display FPS and polygon count
 void debug_draw(void)
 {
-    jo_sprite_draw3D(g_Assets.title, 0, 0, 500);
+    //jo_sprite_draw3D(g_Assets.title, 0, 0, 500);
+
+
+    int x = -320;
+    int y = -144;
+
+    for(int j = 0; j < 20; j++)
+    {
+        for(int i = 0; i < 41; i++)
+        {
+            int rand = jo_random(2) - 1;
+            int sprite = g_Assets.closed;
+            jo_sprite_draw3D(sprite, x + (i*16) + 1, y + (j*16), 500);
+        }
+    }
+
+
+
+    jo_sprite_draw3D(g_Assets.cursors, -330, 0, 500);
+
+
+    jo_sprite_draw3D(g_Assets.flags, 250, -154, 500);
+
+
 
 
     if(g_Game.debug == 0)
