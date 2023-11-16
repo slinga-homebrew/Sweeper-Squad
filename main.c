@@ -34,6 +34,7 @@
 #include <jo/jo.h>
 #include "main.h"
 #include "assets.h"
+#include "team_select.h"
 
 GAME g_Game = {0};
 ASSETS g_Assets = {0};
@@ -64,6 +65,10 @@ void jo_main(void)
 
     loadAssets();
 
+    jo_core_add_callback(teamSelect_input);
+    jo_core_add_callback(teamSelect_update);
+    jo_core_add_callback(teamSelect_draw);
+
     /*
     jo_core_add_callback(ssmtfLogo_input);
     jo_core_add_callback(ssmtfLogo_update);
@@ -93,7 +98,7 @@ void jo_main(void)
     jo_core_set_restart_game_callback(abcStart_callback);
 
     // transition to first game state
-    //transitionState(GAME_STATE_SSMTF_LOGO);
+    //transitionState(GAME_STATE_TEAM_SELECT);
 
     // game loop
     jo_core_run();
@@ -153,27 +158,28 @@ void debug_input(void)
 void debug_draw(void)
 {
     //jo_sprite_draw3D(g_Assets.title, 0, 0, 500);
+    //return;
 
 
-    int x = -320;
+    int x = -312;
     int y = -144;
 
-    for(int j = 0; j < 20; j++)
+    for(int j = 0; j < 16; j++)
     {
-        for(int i = 0; i < 41; i++)
+        for(int i = 0; i < 40; i++)
         {
-            int rand = jo_random(2) - 1;
-            int sprite = g_Assets.closed;
-            jo_sprite_draw3D(sprite, x + (i*16) + 1, y + (j*16), 500);
+            int rand = jo_random(9) - 1;
+            int sprite = g_Assets.digits[rand];
+            jo_sprite_draw3D(sprite, x + (i*16) + 1, y + (j*22), 500);
         }
     }
 
 
 
-    jo_sprite_draw3D(g_Assets.cursors, -330, 0, 500);
+    jo_sprite_draw3D(g_Assets.cursors[0], -330, 0, 500);
 
 
-    jo_sprite_draw3D(g_Assets.flags, 250, -154, 500);
+    jo_sprite_draw3D(g_Assets.flags[0], 250, -154, 500);
 
 
 

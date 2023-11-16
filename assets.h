@@ -14,14 +14,16 @@ typedef struct _assets
     int open;
 
     // mouse cursors
-    int cursors;
+    int cursors[MAX_PLAYERS];
 
-    // bombs
+    // mine
+    int mine;
 
     // digits
+    int digits[9];
 
     // flags
-    int flags;
+    int flags[MAX_TEAMS];
 
 
 

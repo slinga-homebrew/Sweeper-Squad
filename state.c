@@ -1,5 +1,6 @@
 #include "main.h"
 #include "state.h"
+#include "team_select.h"
 //#include "util.h"
 //#include "gameplay.h"
 //#include "ssmtf_logo.h"
@@ -40,6 +41,12 @@ void transitionState(GAME_STATE newState)
             break;
         }
         */
+        case GAME_STATE_TEAM_SELECT:
+        {
+            teamSelect_init();
+            g_Game.gameState = GAME_STATE_TEAM_SELECT;
+            break;
+        }
         default:
         {
             return;

@@ -2,10 +2,8 @@
 
 #include <jo/jo.h>
 #include "state.h"
-
-
-#define GAME_VERSION "0.00"
-#define MAX_DEBUG_LEVEL (1)
+#include "constants.h"
+#include "util.h"
 
 // supported game types
 typedef enum _GAME_TYPE
@@ -73,5 +71,4 @@ typedef struct _GAME
 } GAME, *PGAME;
 
 // globals
-//extern PLAYER g_Players[MAX_PLAYERS];
 extern GAME g_Game;
