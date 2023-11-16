@@ -1,5 +1,5 @@
 #pragma once
-#include "objects.h"
+#include "object.h"
 
 typedef struct _SCORE
 {
@@ -14,6 +14,9 @@ typedef struct _PLAYER
 
     // 0-11, controller ID
     int playerID;
+
+    // what team the player is one
+    int teamSelectChoice;
 
     int color;
 
@@ -33,3 +36,9 @@ typedef struct _PLAYER
     INPUTCACHE input;
 
 } PLAYER, *PPLAYER;
+
+
+void initPlayers(void);
+void getPlayersInput(void);
+void updatePlayers(void);
+void drawPlayers(void);
