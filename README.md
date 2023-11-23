@@ -20,10 +20,11 @@ On Linux I was able to burn the ISO/CUE + WAV with: cdrdao write --force game.cu
 Requires Jo Engine to build. Checkout source code folder to your Jo Engine "Projects" directory and run "./compile.sh".   
  
 ## Credits
-Thank you to Reyeme for the title screen graphics, advice
-Thank you to Danthrax for voting on the name
-Lots of advice and feedback from the #segaxtreme Discord (Fafling, Ndiddy, Ponut, and more)   
-Thank you to [Emerald Nova](www.emeraldnova.com) for organizing the Saturn Dev contest  
-[SegaXtreme](http://www.segaxtreme.net/) - The best Sega Saturn development forum on the web. Thank you for all the advice from all the great posters on the forum.  
-[Jo Engine](https://github.com/johannes-fetz/joengine) - Sega Saturn dev environment
+* EmeraldNova for game idea
+* Thank you to Reyeme for the title screen graphics, advice
+* Thank you to Danthrax for voting on the name
+* Lots of advice and feedback from the #segaxtreme Discord (Fafling, Ndiddy, Ponut, and more)
+* Thank you to [Emerald Nova](www.emeraldnova.com) for organizing the Saturn Dev contest
+* [SegaXtreme](http://www.segaxtreme.net/) - The best Sega Saturn development forum on the web. Thank you for all the advice from all the great posters on the forum.
+* [Jo Engine](https://github.com/johannes-fetz/joengine) - Sega Saturn dev environment
 

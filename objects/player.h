@@ -35,8 +35,10 @@ typedef struct _PLAYER
     // hack to cache controller inputs
     INPUTCACHE input;
 
-} PLAYER, *PPLAYER;
+    bool moveHorizontal;
+    bool moveVertical;
 
+} PLAYER, *PPLAYER;
 
 void initPlayers(void);
 void getPlayersInput(void);

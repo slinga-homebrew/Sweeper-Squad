@@ -35,6 +35,7 @@
 #include "main.h"
 #include "assets.h"
 #include "team_select.h"
+#include "gameplay.h"
 
 GAME g_Game = {0};
 ASSETS g_Assets = {0};
@@ -69,6 +70,10 @@ void jo_main(void)
     jo_core_add_callback(teamSelect_update);
     jo_core_add_callback(teamSelect_draw);
 
+    jo_core_add_callback(gameplay_input);
+    jo_core_add_callback(gameplay_update);
+    jo_core_add_callback(gameplay_draw);
+
     /*
     jo_core_add_callback(ssmtfLogo_input);
     jo_core_add_callback(ssmtfLogo_update);
@@ -78,9 +83,7 @@ void jo_main(void)
     jo_core_add_callback(titleScreen_update);
     jo_core_add_callback(titleScreen_draw);
 
-    jo_core_add_callback(gameplay_input);
-    jo_core_add_callback(gameplay_update);
-    jo_core_add_callback(gameplay_draw);
+
 
     jo_core_add_callback(pause_input);
     jo_core_add_callback(pause_draw);
@@ -98,7 +101,7 @@ void jo_main(void)
     jo_core_set_restart_game_callback(abcStart_callback);
 
     // transition to first game state
-    //transitionState(GAME_STATE_TEAM_SELECT);
+    transitionState(GAME_STATE_GAMEPLAY);
 
     // game loop
     jo_core_run();
@@ -157,30 +160,7 @@ void debug_input(void)
 // display FPS and polygon count
 void debug_draw(void)
 {
-    //jo_sprite_draw3D(g_Assets.title, 0, 0, 500);
-    //return;
-
-
-    int x = -312;
-    int y = -144;
-
-    for(int j = 0; j < 16; j++)
-    {
-        for(int i = 0; i < 40; i++)
-        {
-            int rand = jo_random(9) - 1;
-            int sprite = g_Assets.digits[rand];
-            jo_sprite_draw3D(sprite, x + (i*16) + 1, y + (j*22), 500);
-        }
-    }
-
-
-
-    jo_sprite_draw3D(g_Assets.cursors[0], -330, 0, 500);
-
-
-    jo_sprite_draw3D(g_Assets.flags[0], 250, -154, 500);
-
+    return;
 
 
 
@@ -189,7 +169,7 @@ void debug_draw(void)
         return;
     }
 
-    //jo_printf(0, 27, "Polys: %d    ", jo_3d_get_polygon_count());
+
 
     jo_fixed_point_time();
     slPrintFX(delta_time, slLocate(2,28));

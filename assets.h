@@ -18,6 +18,8 @@ typedef struct _assets
 
     // mine
     int mine;
+    int mine_exploded;
+    int mine_wrong;
 
     // digits
     int digits[9];

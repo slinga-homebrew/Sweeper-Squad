@@ -2,7 +2,7 @@
 #include "state.h"
 #include "team_select.h"
 //#include "util.h"
-//#include "gameplay.h"
+#include "gameplay.h"
 //#include "ssmtf_logo.h"
 //#include "title_screen.h"
 //#include "assets/audio.h"
@@ -33,14 +33,14 @@ void transitionState(GAME_STATE newState)
             g_Game.gameState = GAME_STATE_TITLE_SCREEN;
             break;
         }
+        */
         case GAME_STATE_GAMEPLAY:
         {
-            jo_audio_stop_cd();
+            //jo_audio_stop_cd();
             gameplay_init();
             g_Game.gameState = GAME_STATE_GAMEPLAY;
             break;
         }
-        */
         case GAME_STATE_TEAM_SELECT:
         {
             teamSelect_init();
