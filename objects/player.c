@@ -2,6 +2,7 @@
 #include "../main.h"
 #include "../assets.h"
 #include "player.h"
+#include "grid.h"
 
 
 #define X_SPEED_INC toFIXED(0.5)
@@ -32,6 +33,46 @@ PLAYER g_Players[MAX_PLAYERS] = {0};
 void drawPlayerSprite(PPLAYER player);
 void speedLimitPlayer(PPLAYER player);
 void boundPlayer(PPLAYER player);
+
+void openSquare(PPLAYER player)
+{
+    PSQUARE square;
+    int x2, y2;
+
+    square = playerToSquare(toINT(player->curPos.x), toINT(player->curPos.y), &x2, &y2);
+    if(!square)
+    {
+        // not on a square
+        return;
+    }
+
+    if(square->is_open)
+    {
+        // already open
+        return;
+    }
+
+    // check for bomb
+    // increment score
+    square->is_open = true;
+
+
+
+    if(square->is_bomb)
+    {
+        return;
+    }
+
+    if(square->value != 0)
+    {
+        return;
+    }
+
+    square->is_open = false;
+
+    recursiveOpenSquares(x2, y2);
+
+}
 
 
 void initPlayers(void)
@@ -182,52 +223,24 @@ void getPlayersInput(void)
             player->curPos.dy = 0;
         }
 
-
-        /*
-        // did the player flap
-        // if the player is dead, flapping respawns them
+        // did the player click
         if (jo_is_input_key_down(player->playerID, JO_KEY_A) ||
-            jo_is_input_key_down(player->playerID, JO_KEY_B) ||
+            //jo_is_input_key_down(player->playerID, JO_KEY_B) ||
             jo_is_input_key_down(player->playerID, JO_KEY_C))
         {
-            //if(player->input.pressedABC == false)
+            if(player->input.pressedAC == false)
             {
-                //player->input.pressedABC = true;
-                player->hasFlapped = true;
-                player->flapping = true;
-
-                if(player->animation == PLAYER_ANIMATION_FLYING)
-                {
-                    player->frameTimer += 8;
-                    player->frameTimer = player->frameTimer & 0xf;
-                }
-                else
-                {
-                    player->frameTimer = 8;
-                }
+                openSquare(player);
             }
+            player->input.pressedAC = true;
+
         }
         else
         {
             player->input.pressedAC = false;
-            player->input.pressedB = false;
+            //player->input.pressedB = false;
         }
 
-        // calculate the player's y speed
-        if(player->flapping == true)
-        {
-            //player->flapping = !player->flapping;
-            //player->frameTimer = FLICKY_FLAPPING_SPEED;
-            player->curPos.dy -= Y_SPEED_INC;
-        }
-        else
-        {
-            if(player->curPos.dy < MAX_Y_SPEED)
-            {
-                player->curPos.dy += GRAVITY_CONSTANT;
-            }
-        }
-        */
     }
 }
 
@@ -238,13 +251,10 @@ void updatePlayers(void)
     for(unsigned int i = 0; i < COUNTOF(g_Players); i++)
     {
         player = &g_Players[i];
-
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             continue;
         }
-
-
 
 
         /*
@@ -253,6 +263,7 @@ void updatePlayers(void)
         {
             if(player->animation != PLAYER_ANIMATION_EATING)
             {
+
                 return;
             }
         }
@@ -276,11 +287,6 @@ void drawPlayers(void)
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             continue;
-        }
-
-        if(i == 0)
-        {
-            jo_printf(0, 27, "x: %d y: %d       ", toINT(player->curPos.x), toINT(player->curPos.y));
         }
 
         /*

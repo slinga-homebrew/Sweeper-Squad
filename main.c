@@ -34,6 +34,7 @@
 #include <jo/jo.h>
 #include "main.h"
 #include "assets.h"
+#include "title_screen.h"
 #include "team_select.h"
 #include "gameplay.h"
 
@@ -66,6 +67,10 @@ void jo_main(void)
 
     loadAssets();
 
+    jo_core_add_callback(titleScreen_input);
+    jo_core_add_callback(titleScreen_update);
+    jo_core_add_callback(titleScreen_draw);
+
     jo_core_add_callback(teamSelect_input);
     jo_core_add_callback(teamSelect_update);
     jo_core_add_callback(teamSelect_draw);
@@ -74,16 +79,12 @@ void jo_main(void)
     jo_core_add_callback(gameplay_update);
     jo_core_add_callback(gameplay_draw);
 
+
+
     /*
     jo_core_add_callback(ssmtfLogo_input);
     jo_core_add_callback(ssmtfLogo_update);
     jo_core_add_callback(ssmtfLogo_draw);
-
-    jo_core_add_callback(titleScreen_input);
-    jo_core_add_callback(titleScreen_update);
-    jo_core_add_callback(titleScreen_draw);
-
-
 
     jo_core_add_callback(pause_input);
     jo_core_add_callback(pause_draw);
@@ -101,7 +102,7 @@ void jo_main(void)
     jo_core_set_restart_game_callback(abcStart_callback);
 
     // transition to first game state
-    transitionState(GAME_STATE_GAMEPLAY);
+    transitionState(GAME_STATE_TITLE_SCREEN);
 
     // game loop
     jo_core_run();

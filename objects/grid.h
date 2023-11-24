@@ -29,3 +29,6 @@ typedef struct _GRID
 void initGrid(void);
 void drawGrid(void);
 void updateGrid(void);
+
+PSQUARE playerToSquare(int x, int y, int* x3, int* y3);
+

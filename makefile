@@ -11,7 +11,7 @@ JO_DEBUG = 1
 JO_NTSC = 1
 JO_480i = 1
 JO_COMPILE_USING_SGL=1
-SRCS=main.c assets.c gameplay.c state.c team_select.c objects/grid.c objects/flag.c objects/player.c
+SRCS=main.c assets.c gameplay.c state.c team_select.c title_screen.c objects/grid.c objects/flag.c objects/player.c
 JO_ENGINE_SRC_DIR=../../jo_engine
 COMPILER_DIR=../../Compiler
 include $(COMPILER_DIR)/COMMON/jo_engine_makefile

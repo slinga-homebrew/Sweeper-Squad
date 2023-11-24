@@ -5,6 +5,87 @@
 
 GRID g_Grid = {0};
 
+void recursiveOpenSquares(int x, int y)
+{
+    PSQUARE square = NULL;
+
+    if(x < 0 || x >= g_Grid.num_cols)
+    {
+        return;
+    }
+
+    if(y < 0 || y >= g_Grid.num_rows)
+    {
+        return;
+    }
+
+    square = &g_Grid.squares[x][y];
+    if(square->is_open)
+    {
+        return;
+    }
+
+    if(square->is_bomb)
+    {
+        return;
+    }
+
+    square->is_open = true;
+
+
+    if(square->value != 0)
+    {
+        return;
+    }
+
+    recursiveOpenSquares(x-1, y-1);
+    recursiveOpenSquares(x, y-1);
+    recursiveOpenSquares(x+1, y-1);
+
+    recursiveOpenSquares(x-1, y);
+    recursiveOpenSquares(x+1, y);
+
+    recursiveOpenSquares(x-1, y+1);
+    recursiveOpenSquares(x, y+1);
+    recursiveOpenSquares(x+1, y+1);
+
+    return;
+}
+
+PSQUARE playerToSquare(int x, int y, int* x3, int* y3)
+{
+    int x2 = 0;
+    int y2 = 0;
+
+    jo_printf(0, 27, "1 x: %d y: %d x2: %d y2: %d      ", x, y, g_Grid.num_cols, g_Grid.num_rows);
+    jo_printf(0, 28, "1 x: %d y: %d       ", x2, y2);
+
+    //g_Grid.curPos.x = -312;
+    //g_Grid.curPos.y = -144;
+
+    // TODO: make this variables
+    x2 = (x - g_Grid.curPos.x) >> 4;
+    y2 = (y - g_Grid.curPos.y) / 22;
+
+    if(x2 < 0 || x2 >= g_Grid.num_cols)
+    {
+        return NULL;
+    }
+
+    if(y2 < 0 || y2 >= g_Grid.num_rows)
+    {
+        return NULL;
+    }
+
+
+    jo_printf(0, 28, "1 x: %d y: %d       ", x2, y2);
+
+    *x3 = x2;
+    *y3 = y2;
+
+    return &g_Grid.squares[x2][y2];
+}
+
 int getSquareSprite(PSQUARE square)
 {
     if(square->is_open == false)
@@ -87,14 +168,17 @@ void initGrid(void)
     g_Grid.curPos.x = -312;
     g_Grid.curPos.y = -144;
 
+    g_Grid.num_cols = 40;
+    g_Grid.num_rows = 16;
+
     for(int i = 0; i < 40; i++)
     {
         for(int j = 0; j < 16; j++)
         {
             PSQUARE square = &g_Grid.squares[i][j];
 
-            square->is_open = true;//jo_random(2) - 1;
-            square->is_bomb = !(jo_random(10) - 1);
+            square->is_open = false;//jo_random(2) - 1;
+            square->is_bomb = !(jo_random(5) - 1);
             //square->value = jo_random(9) - 1;
         }
     }
