@@ -8,7 +8,9 @@ typedef struct _SQUARE
 
     bool is_open; // true if already open
     bool is_bomb; // true if cell is a bomb
+    bool is_flagged; // true if there is a flag on the cell
 
+    int flag; // team id of the flag
     int value; // count of neighboring bombs
 
 } SQUARE, *PSQUARE;

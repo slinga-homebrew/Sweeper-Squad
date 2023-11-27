@@ -56,8 +56,6 @@ void openSquare(PPLAYER player)
     // increment score
     square->is_open = true;
 
-
-
     if(square->is_bomb)
     {
         return;
@@ -72,6 +70,31 @@ void openSquare(PPLAYER player)
 
     recursiveOpenSquares(x2, y2);
 
+}
+
+void plantFlag(PPLAYER player)
+{
+    PSQUARE square;
+    int x2, y2;
+
+    square = playerToSquare(toINT(player->curPos.x), toINT(player->curPos.y), &x2, &y2);
+    if(!square)
+    {
+        // not on a square
+        return;
+    }
+
+    if(square->is_open)
+    {
+        // already open
+        return;
+    }
+
+    square->is_flagged = !square->is_flagged;
+    square->flag = player->playerID; // should be team id
+
+
+    return;
 }
 
 
@@ -225,7 +248,7 @@ void getPlayersInput(void)
 
         // did the player click
         if (jo_is_input_key_down(player->playerID, JO_KEY_A) ||
-            //jo_is_input_key_down(player->playerID, JO_KEY_B) ||
+            jo_is_input_key_down(player->playerID, JO_KEY_B) ||
             jo_is_input_key_down(player->playerID, JO_KEY_C))
         {
             if(player->input.pressedAC == false)
@@ -238,9 +261,24 @@ void getPlayersInput(void)
         else
         {
             player->input.pressedAC = false;
-            //player->input.pressedB = false;
+            player->input.pressedB = false;
         }
 
+        // did the player plant a flag
+        if (jo_is_input_key_down(player->playerID, JO_KEY_B))
+        {
+            if(player->input.pressedB == false)
+            {
+                plantFlag(player);
+            }
+            player->input.pressedB = true;
+
+        }
+        else
+        {
+            player->input.pressedB = false;
+        }
+        */
     }
 }
 
@@ -251,10 +289,13 @@ void updatePlayers(void)
     for(unsigned int i = 0; i < COUNTOF(g_Players); i++)
     {
         player = &g_Players[i];
+
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             continue;
         }
+
+
 
 
         /*
@@ -287,6 +328,11 @@ void drawPlayers(void)
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             continue;
+        }
+
+        if(i == 0)
+        {
+            jo_printf(0, 27, "x: %d y: %d       ", toINT(player->curPos.x), toINT(player->curPos.y));
         }
 
         /*

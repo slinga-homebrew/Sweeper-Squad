@@ -86,6 +86,12 @@ void jo_main(void)
     jo_core_add_callback(ssmtfLogo_update);
     jo_core_add_callback(ssmtfLogo_draw);
 
+    jo_core_add_callback(titleScreen_input);
+    jo_core_add_callback(titleScreen_update);
+    jo_core_add_callback(titleScreen_draw);
+
+
+
     jo_core_add_callback(pause_input);
     jo_core_add_callback(pause_draw);
 

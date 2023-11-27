@@ -204,6 +204,11 @@ void drawGrid(void)
 
             int sprite = getSquareSprite(square);
             jo_sprite_draw3D(sprite, g_Grid.curPos.x + (i*16) + 1, g_Grid.curPos.y + (j*22), 500);
+
+            if(square->is_open == false && square->is_flagged)
+            {
+                jo_sprite_draw3D(g_Assets.flags[0], g_Grid.curPos.x + (i*16) + 1, g_Grid.curPos.y + (j*22), 500);
+            }
         }
     }
 
