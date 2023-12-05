@@ -21,11 +21,14 @@ void titleScreen_input(void)
         //jo_is_pad1_key_pressed(JO_KEY_A) ||
         //jo_is_pad1_key_pressed(JO_KEY_C))
     {
-        g_Game.input.pressedStart = true;
-        g_Game.input.pressedAC = true;
+        if(g_Game.input.pressedStart == false)
+        {
+            g_Game.input.pressedStart = true;
+            g_Game.input.pressedAC = true;
 
-        transitionState(GAME_STATE_GAMEPLAY);
-        return;
+            transitionState(GAME_STATE_TEAM_SELECT);
+            return;
+        }
     }
     else
     {

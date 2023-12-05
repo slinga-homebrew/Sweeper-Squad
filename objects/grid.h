@@ -24,6 +24,9 @@ typedef struct _GRID
     int num_rows;
     int num_mines;
 
+    int square_width;
+    int square_height;
+
     SQUARE squares[40][18];
 
 } GRID, *PGRID;

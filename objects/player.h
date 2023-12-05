@@ -44,3 +44,5 @@ void initPlayers(void);
 void getPlayersInput(void);
 void updatePlayers(void);
 void drawPlayers(void);
+//void openSquare(PPLAYER player);
+

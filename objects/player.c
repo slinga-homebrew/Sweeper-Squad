@@ -248,7 +248,6 @@ void getPlayersInput(void)
 
         // did the player click
         if (jo_is_input_key_down(player->playerID, JO_KEY_A) ||
-            jo_is_input_key_down(player->playerID, JO_KEY_B) ||
             jo_is_input_key_down(player->playerID, JO_KEY_C))
         {
             if(player->input.pressedAC == false)
@@ -261,7 +260,6 @@ void getPlayersInput(void)
         else
         {
             player->input.pressedAC = false;
-            player->input.pressedB = false;
         }
 
         // did the player plant a flag
@@ -278,7 +276,6 @@ void getPlayersInput(void)
         {
             player->input.pressedB = false;
         }
-        */
     }
 }
 
@@ -289,13 +286,10 @@ void updatePlayers(void)
     for(unsigned int i = 0; i < COUNTOF(g_Players); i++)
     {
         player = &g_Players[i];
-
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             continue;
         }
-
-
 
 
         /*
@@ -328,11 +322,6 @@ void drawPlayers(void)
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             continue;
-        }
-
-        if(i == 0)
-        {
-            jo_printf(0, 27, "x: %d y: %d       ", toINT(player->curPos.x), toINT(player->curPos.y));
         }
 
         /*

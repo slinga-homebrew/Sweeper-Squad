@@ -64,8 +64,8 @@ PSQUARE playerToSquare(int x, int y, int* x3, int* y3)
     //g_Grid.curPos.y = -144;
 
     // TODO: make this variables
-    x2 = (x - g_Grid.curPos.x) >> 4;
-    y2 = (y - g_Grid.curPos.y) / 22;
+    x2 = (x - g_Grid.curPos.x) / g_Grid.square_width;
+    y2 = (y - g_Grid.curPos.y) / g_Grid.square_height;
 
     if(x2 < 0 || x2 >= g_Grid.num_cols)
     {
@@ -106,12 +106,12 @@ int isSquareBomb(int x, int y)
     PSQUARE square = NULL;
 
     // make sure we are still in the grid
-    if(x < 0 || x >= 40)
+    if(x < 0 || x >= g_Grid.num_cols)
     {
         return 0;
     }
 
-    if(y < 0 || y >= 18)
+    if(y < 0 || y >= g_Grid.num_rows)
     {
         return 0;
     }
@@ -150,9 +150,9 @@ int calculateSquareValue(int x, int y)
 
 void calculateGridValues(void)
 {
-    for(int i = 0; i < 40; i++)
+    for(int i = 0; i < g_Grid.num_cols; i++)
     {
-        for(int j = 0; j < 16; j++)
+        for(int j = 0; j < g_Grid.num_rows; j++)
         {
             PSQUARE square = &g_Grid.squares[i][j];
             square->value = calculateSquareValue(i, j);
@@ -165,15 +165,19 @@ void initGrid(void)
 {
     memset(&g_Grid, 0, sizeof(g_Grid));
 
-    g_Grid.curPos.x = -312;
-    g_Grid.curPos.y = -144;
+    g_Grid.num_cols = 30;
+    g_Grid.num_rows = 15;
 
-    g_Grid.num_cols = 40;
-    g_Grid.num_rows = 16;
+    g_Grid.square_width = 21;
+    g_Grid.square_height = 22;
 
-    for(int i = 0; i < 40; i++)
+    g_Grid.curPos.x = -315 + g_Grid.square_width/2;
+    g_Grid.curPos.y = -165 + g_Grid.square_height/2;
+
+
+    for(int i = 0; i < g_Grid.num_cols; i++)
     {
-        for(int j = 0; j < 16; j++)
+        for(int j = 0; j < g_Grid.num_rows; j++)
         {
             PSQUARE square = &g_Grid.squares[i][j];
 
@@ -194,23 +198,31 @@ void drawGrid(void)
         return;
     }
 
-    for(int i = 0; i < 40; i++)
+    //jo_sprite_change_sprite_scale(2);
+
+    int width = g_Grid.square_width;
+    int height = g_Grid.square_height;
+
+    for(int i = 0; i < g_Grid.num_cols; i++)
     {
-        for(int j = 0; j < 16; j++)
+        for(int j = 0; j < g_Grid.num_rows; j++)
         {
             PSQUARE square = &g_Grid.squares[i][j];
 
             //square->value = 0;
 
             int sprite = getSquareSprite(square);
-            jo_sprite_draw3D(sprite, g_Grid.curPos.x + (i*16) + 1, g_Grid.curPos.y + (j*22), 500);
+            jo_sprite_draw3D(sprite, g_Grid.curPos.x + (i*width) + 1, g_Grid.curPos.y + (j*height), 500);
 
             if(square->is_open == false && square->is_flagged)
             {
-                jo_sprite_draw3D(g_Assets.flags[0], g_Grid.curPos.x + (i*16) + 1, g_Grid.curPos.y + (j*22), 500);
+                jo_sprite_draw3D(g_Assets.flags[0], g_Grid.curPos.x + (i*width) + 1, g_Grid.curPos.y + (j*height), 500);
             }
         }
     }
+
+    //jo_sprite_change_sprite_scale(1);
+
 
     return;
 }

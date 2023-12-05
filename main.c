@@ -54,7 +54,7 @@ void debug_draw(void);
 // sets up callback and starts game loop
 void jo_main(void)
 {
-    jo_core_init(JO_COLOR_Gray);
+    jo_core_init(JO_COLOR_Black);
 
     //
     // load\init game assets
@@ -64,6 +64,9 @@ void jo_main(void)
         slZoomNbg0(toFIXED(0.5), toFIXED(0.5));
         VDP2_CRAOFB = 0x0010 | (VDP2_CRAOFB & 0xFF0F);
     #endif
+
+    // disable pre-clipping for perf (Thanks Fafling!)
+    __jo_sprite_attributes.effect |= (1 << 11);
 
     loadAssets();
 
@@ -79,18 +82,10 @@ void jo_main(void)
     jo_core_add_callback(gameplay_update);
     jo_core_add_callback(gameplay_draw);
 
-
-
     /*
     jo_core_add_callback(ssmtfLogo_input);
     jo_core_add_callback(ssmtfLogo_update);
     jo_core_add_callback(ssmtfLogo_draw);
-
-    jo_core_add_callback(titleScreen_input);
-    jo_core_add_callback(titleScreen_update);
-    jo_core_add_callback(titleScreen_draw);
-
-
 
     jo_core_add_callback(pause_input);
     jo_core_add_callback(pause_draw);
@@ -108,6 +103,7 @@ void jo_main(void)
     jo_core_set_restart_game_callback(abcStart_callback);
 
     // transition to first game state
+    jo_set_default_background_color(JO_COLOR_Gray);
     transitionState(GAME_STATE_TITLE_SCREEN);
 
     // game loop
@@ -167,16 +163,10 @@ void debug_input(void)
 // display FPS and polygon count
 void debug_draw(void)
 {
-    return;
-
-
-
     if(g_Game.debug == 0)
     {
-        return;
+        //return;
     }
-
-
 
     jo_fixed_point_time();
     slPrintFX(delta_time, slLocate(2,28));

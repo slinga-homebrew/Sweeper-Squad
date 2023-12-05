@@ -34,7 +34,6 @@ void transitionState(GAME_STATE newState)
             g_Game.gameState = GAME_STATE_TITLE_SCREEN;
             break;
         }
-        */
         case GAME_STATE_GAMEPLAY:
         {
             //jo_audio_stop_cd();

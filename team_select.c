@@ -8,8 +8,8 @@
 extern PLAYER g_Players[MAX_PLAYERS];
 
 // TODO: fix
-#define TRANSITION_TIMER (6 * FRAMES_IN_SECONDS) // how long to wait after transitioning
-//#define TRANSITION_TIMER (0)
+//#define TRANSITION_TIMER (6 * FRAMES_IN_SECONDS) // how long to wait after transitioning
+#define TRANSITION_TIMER (0)
 
 int g_StartGameFrames = TRANSITION_TIMER;
 bool g_TeamSelectPressedStart = false;

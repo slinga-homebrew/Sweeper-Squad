@@ -125,5 +125,5 @@ static void loadSpriteAssets(void)
     g_Assets.mine_exploded = g_Assets.mine + 1;
     g_Assets.mine_wrong = g_Assets.mine + 2;
 
-
+    g_Assets.closed = jo_sprite_add_tga(NULL, "CLOSED.TGA", palette_transparent_index);
 }
