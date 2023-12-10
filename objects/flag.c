@@ -19,11 +19,15 @@ void initTeamSelectFlags(void)
 
 void drawTeamSelectFlags(void)
 {
+    int flagSprite = 0;
+    int x_offset = 0;
+
+    jo_sprite_change_sprite_scale(2);
+
     for(int i = 0; i < MAX_TEAMS; i++)
     {
         PFLAG flag = &g_TeamSelectFlags[i];
-        int flagSprite = 0;
-        int x_offset = 0;
+
 
         if(flag->objectState != OBJECT_STATE_ACTIVE)
         {
@@ -35,17 +39,41 @@ void drawTeamSelectFlags(void)
 
         if(i < 6)
         {
-            x_offset = -240 + (i * 40);
+            x_offset = -240 + (i * 42);
         }
         else
         {
-            x_offset = -240 + ((i + 1) * 40);
+            x_offset = -240 + ((i + 1) * 42);
         }
 
-        jo_sprite_change_sprite_scale(2);
+        jo_sprite_draw3D(flagSprite, x_offset, -200, 500);
+    }
+
+
+
+    x_offset = -240 + ((6) * 42);
+    jo_sprite_draw3D(g_Assets.digits[0], x_offset, -200, 500);
+
+    jo_sprite_change_sprite_scale(1);
+
+}
+
+void drawTeamSelectGrid(void)
+{
+    int sprite = 0;
+    int x_offset = 0;
+    int y_offset = 0;
+
+    for(int i = 0; i < 13; i++)
+    {
+        for(int j = 0; j < 13; j++)
         {
-            jo_sprite_draw3D(flagSprite, x_offset, -200, 500);
-        }
-        jo_sprite_change_sprite_scale(1);
+            sprite = g_Assets.open_select;
+
+            x_offset = -240 + (i * 42);
+            y_offset = -200 + 44 + (j * 28) - 8;
+            jo_sprite_draw3D(sprite, x_offset, y_offset, 500);
+       }
     }
 }
+

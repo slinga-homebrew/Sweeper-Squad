@@ -20,3 +20,4 @@ typedef struct _FLAG
 
 void initTeamSelectFlags(void);
 void drawTeamSelectFlags(void);
+void drawTeamSelectGrid(void);

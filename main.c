@@ -34,6 +34,7 @@
 #include <jo/jo.h>
 #include "main.h"
 #include "assets.h"
+#include "ssmtf_logo.h"
 #include "title_screen.h"
 #include "team_select.h"
 #include "gameplay.h"
@@ -42,7 +43,6 @@ GAME g_Game = {0};
 ASSETS g_Assets = {0};
 
 extern Uint16 VDP2_CRAOFB;
-
 
 //PLAYER g_Players[MAX_PLAYERS] = {0};
 
@@ -70,6 +70,10 @@ void jo_main(void)
 
     loadAssets();
 
+    jo_core_add_callback(ssmtfLogo_input);
+    jo_core_add_callback(ssmtfLogo_update);
+    jo_core_add_callback(ssmtfLogo_draw);
+
     jo_core_add_callback(titleScreen_input);
     jo_core_add_callback(titleScreen_update);
     jo_core_add_callback(titleScreen_draw);
@@ -83,9 +87,7 @@ void jo_main(void)
     jo_core_add_callback(gameplay_draw);
 
     /*
-    jo_core_add_callback(ssmtfLogo_input);
-    jo_core_add_callback(ssmtfLogo_update);
-    jo_core_add_callback(ssmtfLogo_draw);
+
 
     jo_core_add_callback(pause_input);
     jo_core_add_callback(pause_draw);
@@ -104,7 +106,8 @@ void jo_main(void)
 
     // transition to first game state
     jo_set_default_background_color(JO_COLOR_Gray);
-    transitionState(GAME_STATE_TITLE_SCREEN);
+    transitionState(GAME_STATE_SSMTF_LOGO);
+    //transitionState(GAME_STATE_TEAM_SELECT);
 
     // game loop
     jo_core_run();

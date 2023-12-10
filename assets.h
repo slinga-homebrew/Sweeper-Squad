@@ -12,6 +12,7 @@ typedef struct _assets
     // grid
     int closed;
     int open;
+    int open_select;
 
     // mouse cursors
     int cursors[MAX_PLAYERS];
@@ -19,6 +20,7 @@ typedef struct _assets
     // mine
     int mine;
     int mine_exploded;
+    int mine_first;
     int mine_wrong;
 
     // digits

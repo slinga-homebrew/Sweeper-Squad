@@ -166,11 +166,13 @@ void teamSelect_draw(void)
         return;
     }
 
-    drawPlayers();
     //drawWater();
     //drawStars();
     drawTeamSelectFlags();
+    drawTeamSelectGrid();
     //drawSplashes();
+    drawPlayers();
+
 
     // stop any audio that's playing
     //jo_audio_stop_cd();
@@ -277,19 +279,15 @@ void updateTeamSelectPlayers(void)
         int playerX = 0;
         int playerY = 0;
 
-        playerX = -240 + (player->teamSelectChoice * 40);
-        playerY = -200 + ((i + 1) * 31);
+        playerX = -240 + (player->teamSelectChoice * 42);
+        playerY = -200 + 8 + ((i + 1) * 28);
 
         player->curPos.x = toFIXED(playerX);
         player->curPos.y = toFIXED(playerY);
 
-        if(player->teamSelectChoice < 6)
+        if(i >= 6)
         {
-            //setPlayerDir(player, RIGHT);
-        }
-        else
-        {
-            //setPlayerDir(player, LEFT);
+            player->curPos.y += toFIXED(28);
         }
     }
 

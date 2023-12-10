@@ -121,7 +121,7 @@ void initPlayers(void)
         }
         else
         {
-            player->objectState = OBJECT_STATE_INACTIVE;
+            player->objectState = OBJECT_STATE_ACTIVE;
         }
 
         //player->animation = PLAYER_ANIMATION_IDLE;

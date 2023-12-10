@@ -77,7 +77,7 @@ static void loadSpriteAssets(void)
     #define NUM_CURSORS_SPRITES 12
     #define NUM_FLAGS_SPRITES 12
     #define NUM_GRID_SPRITES 10
-    #define NUM_MINE_SPRITES 3
+    #define NUM_MINE_SPRITES 4
 
     jo_tile cursors_tileset[NUM_CURSORS_SPRITES] = {0};
     jo_tile flags_tileset[NUM_FLAGS_SPRITES] = {0};
@@ -91,16 +91,13 @@ static void loadSpriteAssets(void)
     g_Assets.title = jo_sprite_add_tga(NULL, "TITLE.TGA", palette_transparent_index);
     jo_set_tga_palette_handling(JO_NULL);
 
-
     //g_Assets.closed = jo_sprite_add_tga(NULL, "CLOSED.TGA", palette_transparent_index);
     //g_Assets.open = jo_sprite_add_tga(NULL, "OPEN.TGA", palette_transparent_index);
 
-
-
     initTileset(cursors_tileset, COUNTOF(cursors_tileset), 12, 16, 16);
-    initTileset(flags_tileset, COUNTOF(flags_tileset), 12, 16, 22);
-    initTileset(grid_tileset, COUNTOF(grid_tileset), 10, 16, 22);
-    initTileset(mines_tileset, COUNTOF(mines_tileset), 3, 16, 22);
+    initTileset(flags_tileset, COUNTOF(flags_tileset), 12, 24, 22);
+    initTileset(grid_tileset, COUNTOF(grid_tileset), 10, 24, 22);
+    initTileset(mines_tileset, COUNTOF(mines_tileset), 4, 24, 22);
 
     g_Assets.cursors[0] = jo_sprite_add_tga_tileset(NULL, "CURSORS.TGA", palette_transparent_index, cursors_tileset, COUNTOF(cursors_tileset));
     for(unsigned int i = 0; i < 12; i++)
@@ -123,7 +120,8 @@ static void loadSpriteAssets(void)
 
     g_Assets.mine = jo_sprite_add_tga_tileset(NULL, "MINES.TGA", palette_transparent_index, mines_tileset, COUNTOF(mines_tileset));
     g_Assets.mine_exploded = g_Assets.mine + 1;
-    g_Assets.mine_wrong = g_Assets.mine + 2;
+    g_Assets.mine_first = g_Assets.mine + 2;
+    g_Assets.mine_wrong = g_Assets.mine + 3;
 
-    g_Assets.closed = jo_sprite_add_tga(NULL, "CLOSED.TGA", palette_transparent_index);
+    g_Assets.open_select = jo_sprite_add_tga(NULL, "OPEN.TGA", palette_transparent_index);
 }

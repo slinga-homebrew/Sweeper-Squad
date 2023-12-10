@@ -95,7 +95,7 @@ int getSquareSprite(PSQUARE square)
 
     if(square->is_bomb == true)
     {
-        return g_Assets.mine;
+        return g_Assets.mine_exploded;
     }
 
     return g_Assets.digits[square->value];
