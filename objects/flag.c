@@ -2,6 +2,7 @@
 #include "../main.h"
 #include "../assets.h"
 #include "flag.h"
+#include <string.h>
 
 FLAG g_TeamSelectFlags[MAX_TEAMS] = {0};
 
@@ -13,6 +14,7 @@ void initTeamSelectFlags(void)
     {
         PFLAG flag = &g_TeamSelectFlags[i];
         flag->teamID = i;
+        flag->no_players = false;
         flag->objectState = OBJECT_STATE_ACTIVE;
     }
 }
@@ -28,14 +30,19 @@ void drawTeamSelectFlags(void)
     {
         PFLAG flag = &g_TeamSelectFlags[i];
 
-
         if(flag->objectState != OBJECT_STATE_ACTIVE)
         {
-            //jo_printf(2, 5, "bb state: %d", bonusBalloon->subState);
-            //continue;
+            continue;
         }
 
-        flagSprite = g_Assets.flags[flag->teamID];
+        if(flag->no_players == false)
+        {
+            flagSprite = g_Assets.flags2[flag->teamID];
+        }
+        else
+        {
+            flagSprite = g_Assets.mine_wrong_ts;
+        }
 
         if(i < 6)
         {
@@ -49,31 +56,25 @@ void drawTeamSelectFlags(void)
         jo_sprite_draw3D(flagSprite, x_offset, -200, 500);
     }
 
-
-
-    x_offset = -240 + ((6) * 42);
-    jo_sprite_draw3D(g_Assets.digits[0], x_offset, -200, 500);
+    //x_offset = -240 + ((6) * 42);
+    //jo_sprite_draw3D(g_Assets.digits[0], x_offset, -200, 500);
 
     jo_sprite_change_sprite_scale(1);
-
 }
 
-void drawTeamSelectGrid(void)
+void destroyTeamSelectFlag(unsigned int flag_index)
 {
-    int sprite = 0;
-    int x_offset = 0;
-    int y_offset = 0;
+    PFLAG flag = NULL;
 
-    for(int i = 0; i < 13; i++)
+    if(flag_index >= MAX_TEAMS)
     {
-        for(int j = 0; j < 13; j++)
-        {
-            sprite = g_Assets.open_select;
-
-            x_offset = -240 + (i * 42);
-            y_offset = -200 + 44 + (j * 28) - 8;
-            jo_sprite_draw3D(sprite, x_offset, y_offset, 500);
-       }
+        return;
     }
+
+    // set the no players flag
+    flag = &g_TeamSelectFlags[flag_index];
+    flag->no_players = true;
+
+    return;
 }
 

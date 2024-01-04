@@ -9,15 +9,10 @@ typedef struct _FLAG
     // 0-11
     int teamID;
 
+    bool no_players; // flag used in team select to show no players are on the team
+
 } FLAG, *PFLAG;
-
-
-//void initPlayers(void);
-//void getPlayersInput(void);
-//void updatePlayers(void);
-//void drawPlayers(void);
-
 
 void initTeamSelectFlags(void);
 void drawTeamSelectFlags(void);
-void drawTeamSelectGrid(void);
+void destroyTeamSelectFlag(unsigned int flag_index);

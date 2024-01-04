@@ -4,7 +4,6 @@
 #include "objects/grid.h"
 #include "objects/player.h"
 
-
 extern PLAYER g_Players[MAX_PLAYERS];
 
 bool g_RoundOver = false;
@@ -94,6 +93,8 @@ void gameplay_init(void)
 
 
     g_Game.isPaused = false;
+
+
     //g_RoundOver = false;
     //g_Game.dramaticDeathCounter = 0;
     //g_BonusBalloonsPopped = 0;
@@ -122,8 +123,12 @@ void gameplay_update(void)
         return;
     }
 
-    updatePlayers();
+    if(g_Game.isPaused == true)
+    {
+        return;
+    }
 
+    updatePlayers();
 }
 
 void gameplay_draw(void)
@@ -133,8 +138,11 @@ void gameplay_draw(void)
         return;
     }
 
+    if(g_Game.isPaused == true)
+    {
+        return;
+    }
+
     drawGrid();
     drawPlayers();
 }
-
-

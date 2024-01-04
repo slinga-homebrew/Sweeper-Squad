@@ -36,4 +36,4 @@ void drawGrid(void);
 void updateGrid(void);
 
 PSQUARE playerToSquare(int x, int y, int* x3, int* y3);
-
+void recursiveOpenSquares(int x, int y);

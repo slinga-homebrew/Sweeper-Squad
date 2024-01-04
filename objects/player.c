@@ -1,8 +1,10 @@
 #include <jo/jo.h>
+#include <string.h>
 #include "../main.h"
 #include "../assets.h"
 #include "player.h"
 #include "grid.h"
+
 
 
 #define X_SPEED_INC toFIXED(0.5)
@@ -136,6 +138,11 @@ void initPlayers(void)
         //player->numBalloons = 2;
 
         //player->invulnerableTimer = 0; // make players invulnerable on spawn
+
+
+        player->score.deaths = jo_random(2);
+        player->score.points = jo_random(2);
+        player->score.team_points = jo_random(2);
     }
 }
 
@@ -157,6 +164,12 @@ void getPlayersInput(void)
         if(player->objectState == OBJECT_STATE_INACTIVE)
         {
             // TODO: hit a button to respawn??
+            continue;
+        }
+
+        if(player->subState == PLAYER_STATE_EXPLODING)
+        {
+            // can't move if exploding
             continue;
         }
 
@@ -291,6 +304,16 @@ void updatePlayers(void)
             continue;
         }
 
+        if(player->subState == PLAYER_STATE_EXPLODING)
+        {
+            player->frameCount--;
+            if(player->frameCount <= 0)
+            {
+                player->objectState = OBJECT_STATE_INACTIVE;
+            }
+            continue;
+        }
+
 
         /*
         // don't update the player if dramatic death is happening
@@ -353,48 +376,12 @@ void drawPlayerSprite(PPLAYER player)
 {
     int playerSprite = 0;
 
-    /*
-    if(player->dirRight == true)
-    {
-        jo_sprite_enable_horizontal_flip();
-    }
-
-    playerSprite = getPlayerSprite(player);
-    */
-
-    //playerSprite = g_Assets.cursors[player->playerID];
-
-    if(player->playerID >= 0 && player->playerID < 12)
+    //if(player->playerID >= 0 && player->playerID < 12)
     {
        playerSprite = g_Assets.cursors[player->playerID];
        jo_sprite_draw3D(playerSprite, toINT(player->curPos.x), toINT(player->curPos.y), PLAYER_Z);
     }
 
-    //jo_sprite_change_sprite_scale(3);
-
-
-    //jo_sprite_draw3D(g_Assets.fish[4][2], toINT(player->curPos.x), toINT(player->curPos.y), FISH_Z);
-    //jo_sprite_change_sprite_scale(1);
-
-    /*
-    // draw another sprite if the player has wrapped the screen
-    // todo: check if the player is out of position before drawing
-    if(player->curPos.x  + toFIXED(8.0) > SCREEN_RIGHT)
-    {
-        jo_sprite_draw3D(playerSprite, toINT(player->curPos.x - SCREEN_WIDTH), toINT(player->curPos.y), PLAYER_Z);
-    }
-
-    // draw another sprite if the player has wrapped the screen
-    if(player->curPos.x - toFIXED(8.0) < SCREEN_LEFT)
-    {
-        jo_sprite_draw3D(playerSprite, toINT(player->curPos.x + SCREEN_WIDTH), toINT(player->curPos.y), PLAYER_Z);
-    }
-
-    if(player->dirRight == true)
-    {
-        jo_sprite_disable_horizontal_flip();
-    }
-    */
 }
 
 
@@ -470,4 +457,11 @@ void boundPlayer(PPLAYER player)
 
 
     return;
+}
+
+void explodePlayer(PPLAYER player)
+{
+    player->subState = PLAYER_STATE_EXPLODING;
+    player->frameCount = EXPLODE_FRAME_COUNT;
+    player->objectState = OBJECT_STATE_INACTIVE;
 }

@@ -5,6 +5,8 @@
 #include "constants.h"
 #include "util.h"
 
+#define VERSION "v0.5.0"
+
 // supported game types
 typedef enum _GAME_TYPE
 {

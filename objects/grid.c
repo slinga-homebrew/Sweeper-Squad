@@ -2,6 +2,7 @@
 #include "../main.h"
 #include "../assets.h"
 #include "grid.h"
+#include <string.h>
 
 GRID g_Grid = {0};
 

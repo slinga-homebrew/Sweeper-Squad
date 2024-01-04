@@ -1,10 +1,11 @@
 #include "main.h"
 #include "state.h"
-#include "team_select.h"
-//#include "util.h"
-#include "gameplay.h"
-//#include "ssmtf_logo.h"
+#include "ssmtf_logo.h"
 #include "title_screen.h"
+#include "team_select.h"
+#include "gameplay.h"
+//#include "util.h"
+
 //#include "assets/audio.h"
 
 // transistions between game states

@@ -125,7 +125,6 @@ void ssmtfLogo_update(void)
 // draws Sega Saturn Multiplayer Task Force logo
 void ssmtfLogo_draw(void)
 {
-    unsigned int frameAnim = 0;
     int sprite = g_Assets.mine_exploded;
 
     if(g_Game.gameState != GAME_STATE_SSMTF_LOGO)

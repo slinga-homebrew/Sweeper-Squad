@@ -56,10 +56,13 @@ void titleScreen_draw(void)
         return;
     }
 
+    // title graphic
     jo_sprite_change_sprite_scale(2);
     jo_sprite_draw3D(g_Assets.title, 0, 0, 500);
     jo_sprite_change_sprite_scale(1);
 
+    // version number
+    jo_printf(30, 28, "%s", VERSION);
 
     return;
 }

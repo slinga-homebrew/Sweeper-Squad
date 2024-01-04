@@ -34,17 +34,16 @@
 #include <jo/jo.h>
 #include "main.h"
 #include "assets.h"
-#include "ssmtf_logo.h"
-#include "title_screen.h"
-#include "team_select.h"
 #include "gameplay.h"
+#include "pause.h"
+#include "ssmtf_logo.h"
+#include "team_select.h"
+#include "title_screen.h"
 
 GAME g_Game = {0};
 ASSETS g_Assets = {0};
 
 extern Uint16 VDP2_CRAOFB;
-
-//PLAYER g_Players[MAX_PLAYERS] = {0};
 
 // global callbacks, not tied to a specific game state
 void abcStart_callback(void);
@@ -68,7 +67,12 @@ void jo_main(void)
     // disable pre-clipping for perf (Thanks Fafling!)
     __jo_sprite_attributes.effect |= (1 << 11);
 
+    // load sprites + PCM audio
     loadAssets();
+
+    //
+    // game callbacks
+    //
 
     jo_core_add_callback(ssmtfLogo_input);
     jo_core_add_callback(ssmtfLogo_update);
@@ -86,19 +90,10 @@ void jo_main(void)
     jo_core_add_callback(gameplay_update);
     jo_core_add_callback(gameplay_draw);
 
-    /*
-
-
     jo_core_add_callback(pause_input);
     jo_core_add_callback(pause_draw);
 
-    // misc callbacks
-    jo_core_add_callback(changeHud_input);
-
     jo_core_add_callback(debug_input);
-
-    */
-
     jo_core_add_callback(debug_draw);
 
     // ABC + start handler
@@ -106,8 +101,18 @@ void jo_main(void)
 
     // transition to first game state
     jo_set_default_background_color(JO_COLOR_Gray);
+
+    // BUG:JO_COLOR_INDEX_Black doesn't seem to workfor me
+    // something with 480i + 8bpp palettes
+    // https://github.com/johannes-fetz/joengine/issues/72
+    jo_set_printf_color_index(JO_COLOR_INDEX_Yellow);
+
+    // TODO
+    g_Game.debug = 1;
+
     transitionState(GAME_STATE_SSMTF_LOGO);
     //transitionState(GAME_STATE_TEAM_SELECT);
+    //transitionState(GAME_STATE_GAMEPLAY);
 
     // game loop
     jo_core_run();
@@ -141,7 +146,6 @@ void abcStart_callback(void)
 // this can occur at any time
 void debug_input(void)
 {
-
     // player 1 press start
     if (jo_is_pad1_key_pressed(JO_KEY_Z))
     {
@@ -168,7 +172,7 @@ void debug_draw(void)
 {
     if(g_Game.debug == 0)
     {
-        //return;
+        return;
     }
 
     jo_fixed_point_time();

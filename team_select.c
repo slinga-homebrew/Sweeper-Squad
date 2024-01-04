@@ -4,25 +4,47 @@
 #include "objects/player.h"
 #include "assets.h"
 
-//extern BONUS_BALLOON g_TeamSelectBonusBalloons[MAX_TEAMS];
 extern PLAYER g_Players[MAX_PLAYERS];
 
-// TODO: fix
-//#define TRANSITION_TIMER (6 * FRAMES_IN_SECONDS) // how long to wait after transitioning
-#define TRANSITION_TIMER (0)
 
-int g_StartGameFrames = TRANSITION_TIMER;
+#define TRANSITION_TIMER (6 * FRAMES_IN_SECONDS) // how long to wait after transitioning
+
+int g_StartGameFrames = 0;
 bool g_TeamSelectPressedStart = false;
 
 bool validateTeams(void);
 void updateTeamSelectPlayers(void);
 
+void drawTeamSelectGrid(void)
+{
+    int sprite = 0;
+    int x_offset = 0;
+    int y_offset = 0;
+
+    for(int i = 0; i < 13; i++)
+    {
+        for(int j = 0; j < 13; j++)
+        {
+            if(i == 6 && g_TeamSelectPressedStart)
+            {
+                sprite = g_Assets.mine_exploded_select;
+            }
+            else
+            {
+                sprite = g_Assets.open_select;
+            }
+
+            x_offset = -240 + (i * 42);
+            y_offset = -200 + 44 + (j * 28) - 8;
+            jo_sprite_draw3D(sprite, x_offset, y_offset, 500);
+       }
+    }
+}
+
 // initializations for SSMTF screen
 void teamSelect_init(void)
 {
-    //initStars();
     initPlayers();
-
     initTeamSelectFlags();
 
     g_TeamSelectPressedStart = false;
@@ -166,16 +188,9 @@ void teamSelect_draw(void)
         return;
     }
 
-    //drawWater();
-    //drawStars();
     drawTeamSelectFlags();
     drawTeamSelectGrid();
-    //drawSplashes();
     drawPlayers();
-
-
-    // stop any audio that's playing
-    //jo_audio_stop_cd();
 
     return;
 }
@@ -236,12 +251,12 @@ bool validateTeams(void)
         return false;
     }
 
-    // pop the balloons of empty teams
+    // destroy the flag of empty teams
     for(int i = 0; i < MAX_TEAMS; i++)
     {
         if(teams[i] == 0)
         {
-            //popBonusBalloon(&g_TeamSelectBonusBalloons[i], NULL);
+            destroyTeamSelectFlag(i);
         }
     }
 
@@ -252,8 +267,8 @@ bool validateTeams(void)
 
         if(player->teamSelectChoice == 6)
         {
-            //cryPlayer(player);
-            // explode player?
+
+            explodePlayer(player);
             continue;
         }
 
