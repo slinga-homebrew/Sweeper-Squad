@@ -1,16 +1,5 @@
 #pragma once
 
-
-// sprites Z-depth
-// lower numbers are closer to the screen
-// larger numbers are farther away
-typedef enum _SPRITE_DEPTH
-{
-
-    PLAYER_Z = 500,
-
-} SPRITE_DEPTH;
-
 typedef enum _OBJECT_STATE
 {
     OBJECT_STATE_INACTIVE = 0,

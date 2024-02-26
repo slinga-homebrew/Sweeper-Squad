@@ -1,6 +1,9 @@
 #pragma once
 #include "object.h"
 
+#define NUM_GRID_COLS (30)
+#define NUM_GRID_ROWS (14)
+
 // individual cell
 typedef struct _SQUARE
 {
@@ -27,13 +30,17 @@ typedef struct _GRID
     int square_width;
     int square_height;
 
-    SQUARE squares[40][18];
+    SQUARE squares[NUM_GRID_COLS][NUM_GRID_ROWS];
 
 } GRID, *PGRID;
 
-void initGrid(void);
+void initGrid(GAME_DIFFICULTY gameDifficulty);
 void drawGrid(void);
 void updateGrid(void);
 
 PSQUARE playerToSquare(int x, int y, int* x3, int* y3);
 void recursiveOpenSquares(int x, int y);
+
+int countSquaresRemaining(void);
+int countMinesRemaining(void);
+

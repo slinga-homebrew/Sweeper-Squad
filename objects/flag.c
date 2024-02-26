@@ -37,7 +37,7 @@ void drawTeamSelectFlags(void)
 
         if(flag->no_players == false)
         {
-            flagSprite = g_Assets.flags2[flag->teamID];
+            flagSprite = g_Assets.flags2[g_Assets.randomizedColors[flag->teamID]];
         }
         else
         {
