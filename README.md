@@ -3,6 +3,10 @@ Sweeper Squad is a 12-player Minesweeper clone for the Sega Saturn. Requires two
 
 Sweeper Squad was my entry to the [Sega Saturn 29th Anniversary Game Competition](https://segaxtreme.net/threads/sega-saturn-29th-anniversary-game-competition.25411/).
 
+## Videos
+[Pandamonium](https://www.youtube.com/watch?v=PhjDKi8vyeg&t=1635s): Version 0.90   
+[Tales of Saturn](https://www.youtube.com/watch?v=9wYRxEmY0kQ&list=PLhPALRBm_hKcb_qYuI5xHLnpEYX2w0zWx&index=1&t=340s): Version 0.90, missing audio   
+
 ## Screenshots
 ![Sega Saturn Multiplayer Task Force](screenshots/ssmtf.png)
 ![Twelve Snakes Title](screenshots/title.png)
