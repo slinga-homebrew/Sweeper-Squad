@@ -1,21 +1,26 @@
 #include <jo/jo.h>
 #include <stdlib.h>
+#include <string.h>
 #include "main.h"
 #include "assets.h"
 #include "objects/player.h"
+#include "audio.h"
 
 extern PLAYER g_Players[MAX_PLAYERS];
+
+int g_PauseChoice = 0;
 
 
 typedef enum _PAUSE_OPTIONS
 {
-    PAUSE_OPTIONS_RESUME_OR_RESTART = 0,
-    PAUSE_OPTIONS_QUIT = 1,
+    PAUSE_OPTIONS_RESUME = 0,
+    PAUSE_OPTIONS_RESTART = 1,
+    PAUSE_OPTIONS_QUIT = 2,
     PAUSE_OPTION_MAX,
 } PAUSE_OPTIONS;
 
 static int sortByScore(const void * player1, const void * player2);
-static int sortByLives(const void * player1, const void * player2);
+//static int sortByTime(const void * player1, const void * player2);
 static void validateScores(void);
 
 static void drawPauseLines(void);
@@ -23,16 +28,35 @@ static void drawPauseLegend(void);
 static void drawPauseScore(void);
 static void drawPauseScoreShip(/*jo_3d_mesh* mesh, int xPos, int yPos, int color*/);
 static void drawPauseMenuCursor(void);
+static void drawPauseMenu(void);
 
 static void checkForPausePress(void);
 static void checkForPauseMenu(void);
 
 int g_PauseCursor = 0;
-PAUSE_OPTIONS g_PauseChoice = 0;
+//PAUSE_OPTIONS g_PauseChoice = 0;
 
 //
 // Pause callbacks
 //
+
+void convertNumberToDigits(int number, unsigned char* hunds, unsigned char* tens, unsigned char* ones)
+{
+    if(number == 0)
+    {
+        *hunds = 0;
+        *tens = 0;
+        *ones = 0;
+
+        return;
+    }
+
+    *hunds = (number / 100);
+    *tens = ((number - ((number/100) * 100))/10);
+    *ones = (number % 10);
+
+    return;
+}
 
 // input for handling pause
 void pause_input(void)
@@ -76,10 +100,8 @@ void pause_draw(void)
     drawPauseScore();
     drawPauseLines();
     drawPauseLegend();
-
-    /*
+    drawPauseMenu();
     drawPauseMenuCursor();
-    */
 
     return;
 }
@@ -94,16 +116,16 @@ void pauseGame(int track)
 
     // TODO: implement random flag
     // randomly choose a color for the cursor ship
-    //index = jo_random(COUNTOF(g_Assets.randomizedColors)) - 1;
+    g_PauseCursor = jo_random(COUNTOF(g_Assets.randomizedColors)) - 1;
     //g_PauseCursorColor = g_Assets.randomizedColors[index];
-    g_PauseCursor = g_Assets.flags[0];
+    //g_PauseCursor = g_Assets.flags[0];
 
     g_PauseChoice = 0;
 
     g_Game.isPaused = true;
 
     // TODO:
-    //playCDTrack(track);
+    playCDTrack(track);
 }
 
 //
@@ -119,7 +141,7 @@ static void checkForPausePress(void)
         if(g_Game.input.pressedStart == false)
         {
             //TODO:
-            pauseGame(0);
+            pauseGame(PAUSE_TRACK);
         }
         g_Game.input.pressedStart = true;
     }
@@ -160,15 +182,8 @@ static void checkForPauseMenu(void)
         g_Game.input.pressedRight = false;
     }
 
-    // keep pause choice in range
-    if(pauseChoice < 0)
-    {
-        pauseChoice = PAUSE_OPTION_MAX - 1;
-    }
-    else if(pauseChoice >= PAUSE_OPTION_MAX)
-    {
-        pauseChoice = 0;
-    }
+    // keep pause screen choice in range
+    sanitizeValue(&pauseChoice, 0, PAUSE_OPTION_MAX);
 
     g_PauseChoice = pauseChoice;
 
@@ -178,21 +193,18 @@ static void checkForPauseMenu(void)
         {
             switch(pauseChoice)
             {
-                case PAUSE_OPTIONS_RESUME_OR_RESTART:
+                case PAUSE_OPTIONS_RESUME:
                 {
-                    // the leftmost option can restart the game on game over
-                    // or unpause if paused depending on the game state
-                    if(g_Game.isGameOver == true)
-                    {
-                        transitionState(GAME_STATE_GAMEPLAY);
-                        break;
-                    }
-                    else
-                    {
-                        // simply unpause
-                        g_Game.isPaused = false;
-                        break;
-                    }
+                    // simply unpause
+                    g_Game.isPaused = false;
+                    break;
+                }
+                case PAUSE_OPTIONS_RESTART:
+                {
+                    // start a new game without going to title or team select
+                    transitionState(GAME_STATE_GAMEPLAY);
+                    break;
+
                 }
                 case PAUSE_OPTIONS_QUIT:
                 {
@@ -218,10 +230,11 @@ static void checkForPauseMenu(void)
 // normalize scores before displaying in game over or pause screen
 static void validateScores(void)
 {
+    int teams[MAX_PLAYERS] = {0};
+
+
     for(int i = 0; i < MAX_PLAYERS; i++)
     {
-
-
         // normalize score data
         if(g_Players[i].score.deaths > 100)
         {
@@ -233,7 +246,15 @@ static void validateScores(void)
             g_Players[i].score.points = 999;
         }
 
-        if(g_Players[i].score.points > 1000)
+        teams[g_Players[i].teamID] += g_Players[i].score.points;
+    }
+
+    for(int i = 0; i < MAX_PLAYERS; i++)
+    {
+        g_Players[i].score.team_points = teams[g_Players[i].teamID];
+
+        // normalize score data
+        if(g_Players[i].score.team_points > 1000)
         {
             g_Players[i].score.team_points = 999;
         }
@@ -248,7 +269,26 @@ static int sortByScore(const void * player1, const void * player2)
     PPLAYER a = (PPLAYER)player1;
     PPLAYER b = (PPLAYER)player2;
 
-    // TODO: check for not playing and lower them
+    // teams have equal score
+    if(b->score.team_points == a->score.team_points)
+    {
+        // are they on different teams?
+        if(b->teamID != a->teamID)
+        {
+            // tie-breaker: lower player ID wins
+            if(b->teamID < a->teamID)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        // fall through, these are players on the same team
+        // we want to sort them
+    }
 
     // sort by team points
     if(b->score.team_points != a->score.team_points)
@@ -336,22 +376,6 @@ static void drawPauseLines(void)
 
 }
 
-// player ships in the score
-static void drawPauseScoreShip(/*jo_3d_mesh* mesh, int xPos, int yPos, int color*/)
-{
-    /*
-    jo_3d_push_matrix();
-    {
-        jo_3d_camera_look_at(&g_Game.camera);
-        jo_3d_set_mesh_color(mesh, color); // todo
-        jo_3d_translate_matrix(xPos + 12, yPos - 2, 0);
-        jo_3d_rotate_matrix(0, 0, 90);
-        jo_3d_mesh_draw(mesh);
-    }
-    jo_3d_pop_matrix();
-    */
-}
-
 // legend for the score chart
 static void drawPauseLegend(void)
 {
@@ -398,12 +422,8 @@ static void drawPauseScore(void)
 {
     PLAYER sortedPlayers[MAX_PLAYERS] = {0};
     int playerSprite = 0;
-    int nonPlayerCount = 0;
-    int color = 0;
     int xPos = 0;
     int yPos = 0;
-    int xScale = 1;
-    int yScale = 1;
     int letterSpacing = 15;
 
     validateScores();
@@ -418,14 +438,14 @@ static void drawPauseScore(void)
     // loop through all the sorted players displaying the score
     for(unsigned int i = 0; i < COUNTOF(sortedPlayers); i++)
     {
+        unsigned int deaths = 0;
+        unsigned int points = 0;
+        unsigned int team_points = 0;
         unsigned char digit1 = 0;
         unsigned char digit2 = 0;
         unsigned char digit3 = 0;
-        unsigned int lives = 0;
-        unsigned int waves = 0;
-        unsigned int score = 0;
         PPLAYER player = NULL;
-        int shipColor = 0;
+        int yellow = 7;
 
         player = &sortedPlayers[i];
 
@@ -439,86 +459,89 @@ static void drawPauseScore(void)
 
         if(digit1 != 0)
         {
-            jo_sprite_draw3D(g_Assets.score_digits[digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
+            jo_sprite_draw3D(g_Assets.scores[yellow][digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
         }
-        jo_sprite_draw3D(g_Assets.score_digits[digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
-
-        // player ship
-        //mesh = g_Assets.ships[i];
-
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
         xPos += (letterSpacing * 2) + 48;
 
 
-        // TODO: should be team sprite
-        playerSprite = g_Assets.flags2[player->playerID];
+        // team flag
+        playerSprite = g_Assets.flags2[g_Assets.randomizedColors[player->teamID]];
         jo_sprite_draw3D(playerSprite, xPos, yPos, PLAYER_Z);
-
         xPos += 64;
 
-
-        //drawPauseScoreShip(mesh, xPos, yPos, shipColor);
+        // player cursor
         playerSprite = g_Assets.cursors[player->playerID];
         jo_sprite_draw3D(playerSprite, xPos-4, yPos, PLAYER_Z);
-
-
-        // lives
         xPos += 48;
 
-        lives = player->score.deaths;
+        // deaths
+        deaths = player->score.deaths;
 
-        digit1 = (lives / 10);
-        digit2 = (lives % 10);
+        digit1 = (deaths / 10);
+        digit2 = (deaths % 10);
 
-        jo_sprite_draw3D(g_Assets.score_digits[digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
-        jo_sprite_draw3D(g_Assets.score_digits[digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
-
-        // wave
-        waves = player->score.points;
-
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
         xPos += 48 + (letterSpacing*2);
-        digit1 = (waves / 100);
-        digit2 = ((waves - ((waves/100) * 100))/10);
-        digit3 = (waves % 10);
-
-        jo_sprite_draw3D(g_Assets.score_digits[digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
-        jo_sprite_draw3D(g_Assets.score_digits[digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
-        jo_sprite_draw3D(g_Assets.score_digits[digit3], xPos + (letterSpacing*2), yPos, PLAYER_Z);
 
         // points
-        score = player->score.team_points;
+        points = player->score.points;
+
+        digit1 = (points / 100);
+        digit2 = ((points - ((points/100) * 100))/10);
+        digit3 = (points % 10);
+
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit3], xPos + (letterSpacing*2), yPos, PLAYER_Z);
+
+        // team points
+        team_points = player->score.team_points;
 
         xPos += 48 + (letterSpacing*3);
-        digit1 = (score / 100);
-        digit2 = ((score - ((score/100) * 100))/10);
-        digit3 = (score % 10);
+        digit1 = (team_points / 100);
+        digit2 = ((team_points - ((team_points/100) * 100))/10);
+        digit3 = (team_points % 10);
 
-        jo_sprite_draw3D(g_Assets.score_digits[digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
-        jo_sprite_draw3D(g_Assets.score_digits[digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
-        jo_sprite_draw3D(g_Assets.score_digits[digit3], xPos + (letterSpacing*2), yPos, PLAYER_Z);
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit1], xPos + (letterSpacing*0), yPos, PLAYER_Z);
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit2], xPos + (letterSpacing*1), yPos, PLAYER_Z);
+        jo_sprite_draw3D(g_Assets.scores[yellow][digit3], xPos + (letterSpacing*2), yPos, PLAYER_Z);
     }
-
 }
 
-// cursor ship
+// Options menu + values
+static void drawPauseMenu(void)
+{
+    int xPos = 0;
+    int yPos = 0;
+
+    // game mode (practice, normal, hardcore, time attack)
+    xPos = -160;
+    yPos = 184;
+
+    // resume
+    jo_sprite_draw3D(g_Assets.resume, xPos, yPos, TITLE_MENU_Z);
+
+    // retry
+    xPos = 0;
+    //yPos = 184;
+    jo_sprite_draw3D(g_Assets.retry, xPos, yPos, TITLE_MENU_Z);
+
+    // exit
+    xPos = 160;
+    //yPos = 190;
+    jo_sprite_draw3D(g_Assets.exit, xPos, yPos, TITLE_MENU_Z);
+}
+
+// The cursor is a random flag
 static void drawPauseMenuCursor(void)
 {
-    /*
-    int color = g_PauseCursorColor;
-    int xPos = -72 + (g_PauseChoice * 128);
-    int yPos = 91;
+    int xPos = 0;
+    int yPos = 0;
 
-    jo_3d_mesh* mesh = g_Assets.cursorShip;
+    xPos = -210 + (g_PauseChoice * 160); // horizontal position varies based on selection
+    yPos = 184;
 
-    jo_3d_push_matrix();
-    {
-        jo_3d_camera_look_at(&g_Game.camera);
-        jo_3d_set_mesh_color(mesh, color);
-        jo_3d_translate_matrix(xPos, yPos, 0);
-        jo_3d_rotate_matrix(0, 0, 90);
-        jo_3d_mesh_draw(mesh);
-    }
-    jo_3d_pop_matrix();
-
-    return;
-    */
+    jo_sprite_draw3D(g_Assets.flags2[g_PauseCursor], xPos, yPos, TITLE_MENU_Z);
 }

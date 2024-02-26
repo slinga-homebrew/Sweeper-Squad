@@ -2,7 +2,6 @@
 **   Sweeper Squad - 12 player Minesweeper clone by Slinga
 */
 
-
 /*
 ** Jo Sega Saturn Engine
 ** Copyright (c) 2012-2017, Johannes Fetz (johannesfetz@gmail.com)
@@ -39,9 +38,14 @@
 #include "ssmtf_logo.h"
 #include "team_select.h"
 #include "title_screen.h"
+#include "objects/player.h"
+
+extern PLAYER g_Players[MAX_PLAYERS];
+
 
 GAME g_Game = {0};
 ASSETS g_Assets = {0};
+extern Uint16 TotalPolygons;
 
 extern Uint16 VDP2_CRAOFB;
 
@@ -113,10 +117,15 @@ void jo_main(void)
     transitionState(GAME_STATE_SSMTF_LOGO);
     //transitionState(GAME_STATE_TEAM_SELECT);
     //transitionState(GAME_STATE_GAMEPLAY);
+    //transitionState(GAME_STATE_TITLE_SCREEN);
 
     // game loop
     jo_core_run();
 }
+
+//
+// Global callbacks (not tied to specific game state)
+//
 
 // returns to title screen if player one presses ABC+Start
 void abcStart_callback(void)
@@ -167,7 +176,7 @@ void debug_input(void)
     }
 }
 
-// display FPS and polygon count
+// display FPS and sprite count
 void debug_draw(void)
 {
     if(g_Game.debug == 0)
@@ -175,7 +184,67 @@ void debug_draw(void)
         return;
     }
 
-    jo_fixed_point_time();
-    slPrintFX(delta_time, slLocate(2,28));
-    jo_printf(0, 28, "Frame:");
+    //jo_fixed_point_time();
+    //slPrintFX(delta_time, slLocate(2,25));
+    //jo_printf(0, 25, "Frame:");
+    //jo_printf(0, 26, "Total Sprites: %d", TotalPolygons); // says polygons, but is actually sprite count
+    //jo_printf(0, 27, "Num Sprites: %d", jo_sprite_count());
+    //jo_printf(0, 28, "Sprites: %d", jo_sprite_usage_percent());
+
+}
+
+void cacheInputDirection(bool* up, bool* down, bool* left, bool *right)
+{
+    jo_gamepad_type gamepad_type = JoNotConnectedGamepad;
+    int mouse_x = 0;
+    int mouse_y = 0;
+    int mouse_dx = 0;
+    int mouse_dy = 0;
+
+    *up = FALSE;
+    *down = FALSE;
+    *left = FALSE;
+    *right = FALSE;
+
+    // Saturn supports two mouse types
+    gamepad_type = jo_get_input_type(0);
+    if(gamepad_type != JoRegularMouse && gamepad_type != JoShuttleMouse)
+    {
+        // no mouse in controller port, treat like regular controller
+        *up = jo_is_pad1_key_pressed(JO_KEY_UP);
+        *down = jo_is_pad1_key_pressed(JO_KEY_DOWN);
+        *left = jo_is_pad1_key_pressed(JO_KEY_LEFT);
+        *right = jo_is_pad1_key_pressed(JO_KEY_RIGHT);
+        return;
+    }
+
+    // player 1 is using a mouse
+    mouse_x = jo_get_mouse_pos_x(0);
+    mouse_y = jo_get_mouse_pos_y(0);
+
+    mouse_dx = g_Game.input.prev_mouse_x - mouse_x;
+    mouse_dy = g_Game.input.prev_mouse_y - mouse_y;
+
+    jo_printf(10, 10, "%d %d %d %d            ", mouse_x, mouse_y, mouse_dx, mouse_dy);
+
+    if(mouse_dx > 1)
+    {
+        *left = TRUE;
+    }
+    else if(mouse_dx < -1)
+    {
+        *right = TRUE;
+    }
+
+    if(mouse_dy > 1)
+    {
+        *up = TRUE;
+    }
+    else if(mouse_dy < -1)
+    {
+        *down = TRUE;
+    }
+
+    g_Game.input.prev_mouse_x = mouse_x;
+    g_Game.input.prev_mouse_y = mouse_y;
 }

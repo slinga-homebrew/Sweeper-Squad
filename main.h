@@ -5,25 +5,26 @@
 #include "constants.h"
 #include "util.h"
 
-#define VERSION "v0.5.0"
+#define VERSION "v0.9"
 
 // supported game types
-typedef enum _GAME_TYPE
+typedef enum _GAME_MODE
 {
-    GAME_TYPE_COOP = 0,
-    GAME_TYPE_VERSUS,
-    GAME_TYPE_MAX,
-} GAME_TYPE;
+    GAME_MODE_PRACTICE = 0, // unlimited lives
+    GAME_MODE_NORMAL = 1, // 3 lives
+    GAME_MODE_HARDCORE = 2, // 1 life
+    GAME_MODE_TIME_ATTACK = 3, // only one team can move at a time.
+    GAME_MODE_MAX,
+} GAME_MODE;
 
-// number of lives per game
-typedef enum _GAME_LIVES
+// supported game difficulty
+typedef enum _GAME_DIFFICULTY
 {
-    GAME_LIVES_1,
-    GAME_LIVES_3,
-    GAME_LIVES_6,
-    GAME_LIVES_9,
-    GAME_LIVES_MAX,
-} GAME_LIVES;
+    GAME_DIFFICULTY_EASY = 0,
+    GAME_DIFFICULTY_MEDIUM = 1,
+    GAME_DIFFICULTY_HARD = 2,
+    GAME_DIFFICULTY_MAX,
+} GAME_DIFFICULTY;
 
 // records whether or not an input has been pressed that frame
 typedef struct _inputCache{
@@ -40,6 +41,10 @@ typedef struct _inputCache{
     bool pressedStart;
     bool pressedLT;
     bool pressedRT;
+
+    int prev_mouse_x;
+    int prev_mouse_y;
+
 } INPUTCACHE, *PINPUTCACHE;
 
 // represents game state
@@ -48,8 +53,12 @@ typedef struct _GAME
     // current game state
     GAME_STATE gameState;
 
-    // coop or versus
-    GAME_TYPE gameType;
+    // practice, normal, hardcore, or time attack
+    GAME_MODE gameMode;
+
+    // easy, medium, hard
+    // affects how many mines are in the game
+    GAME_DIFFICULTY gameDifficulty;
 
     // debug level
     int debug;
@@ -74,3 +83,6 @@ typedef struct _GAME
 
 // globals
 extern GAME g_Game;
+
+void cacheInputDirection(bool* up, bool* down, bool* left, bool *right);
+
