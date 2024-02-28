@@ -201,21 +201,26 @@ void calculateGridValues(void)
 }
 
 // initializes the grid based on game difficulty
+// the higher the difficulty the more mines
 void initGrid(GAME_DIFFICULTY gameDifficulty)
 {
     memset(&g_Grid, 0, sizeof(g_Grid));
 
-
     switch(gameDifficulty)
     {
+        // 420 total grids
         case GAME_DIFFICULTY_EASY:
-            g_Grid.num_mines = 1;
+            g_Grid.num_mines = 42; // 10% mines
             break;
         case GAME_DIFFICULTY_MEDIUM:
-            g_Grid.num_mines = 130;
+            g_Grid.num_mines = 84; // 20% mines
             break;
         case GAME_DIFFICULTY_HARD:
-            g_Grid.num_mines = 180;
+            g_Grid.num_mines = 126; // 30% mines
+            break;
+        default:
+            // impossible to get here
+            g_Grid.num_mines = 1;
             break;
     }
 

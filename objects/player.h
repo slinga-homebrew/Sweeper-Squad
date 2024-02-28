@@ -1,6 +1,9 @@
 #pragma once
 #include "object.h"
 
+#define NOT_PLAYING 0
+#define PLAYING 1
+
 typedef enum _PLAYER_STATE
 {
     PLAYER_STATE_ACTIVE = 0,
@@ -31,11 +34,13 @@ typedef struct _PLAYER
     int angle;
     int da;
 
-
     int frameCount;
 
     // 0-11, controller ID
     int playerID;
+
+    // 0 if not playing, 1 if playing
+    int isPlaying;
 
     // what team the player is on
     int teamSelectChoice;

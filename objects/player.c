@@ -48,6 +48,8 @@ void explodeNeighbors(PPLAYER player);
 
 void respawnPlayer(PPLAYER player, bool deductLife);
 
+static int getLives(GAME_MODE mode);
+
 void spawnPlayers(void)
 {
     PPLAYER player = NULL;
@@ -70,9 +72,16 @@ void resetPlayerScores(void)
         player->score.deaths = 0;
         player->score.points = 0;
         player->score.team_points = 0;
+
+        if(player->isPlaying)
+        {
+            player->numLives = getLives(g_Game.gameMode);
+        }
+        else
+        {
+            player->numLives = 0;
+        }
     }
-
-
 }
 
 static void randomizeTitlePlayerPosition(int* x, int* y);
@@ -83,7 +92,6 @@ static void randomizeTitlePlayerPosition(int* x, int* y)
     *y = toFIXED(480 + jo_random(480));
 }
 
-static int getLives(GAME_MODE mode);
 
 static int getLives(GAME_MODE mode)
 {
@@ -615,7 +623,6 @@ void explodePlayer(PPLAYER player, bool showExplosion, bool spreadExplosion)
     player->subState = PLAYER_STATE_EXPLODING;
     player->frameCount = EXPLODING_FRAME_COUNT + jo_random(EXPLODING_FRAME_COUNT);
     player->score.deaths++;
-    player->numLives--;
 
     player->curPos.dx = jo_random(0x40000) - 0x20000;
     player->curPos.dy = jo_random(0x40000) - 0x20000;

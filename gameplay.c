@@ -116,7 +116,7 @@ static void drawScore(void)
             continue;
         }
 
-        scores[player->teamSelectChoice].points += player->score.points;
+        scores[player->teamID].points += player->score.points;
     }
 
 
@@ -181,7 +181,7 @@ int countActiveTeams()
             continue;
         }
 
-        teamCount[player->teamSelectChoice] = teamCount[player->teamSelectChoice] + 1;
+        teamCount[player->teamID] = teamCount[player->teamID] + 1;
     }
 
     for(unsigned int j = 0; j < COUNTOF(teamCount); j++)
@@ -226,23 +226,14 @@ static bool isRoundOver(void)
 
 void gameplay_init(void)
 {
-
-    // init grid?
-    //getPlayerSpawnLocations(g_Players, false);
-
     initGrid(g_Game.gameDifficulty);
     resetPlayerScores();
     spawnPlayers();
 
     initExplosions();
 
-    // todo:
     g_Game.isPaused = false;
-    //g_Game.isPaused = true;
-
-
     g_RoundOver = false;
-
 }
 
 void gameplay_input(void)
