@@ -87,6 +87,7 @@ static void loadSpriteAssets(void)
     #define NUM_CRACKS_SPRITES 4
     #define NUM_SCORES_SPRITES 120
     #define NUM_TITLE_TEXT_SPRITES 10
+    #define NUM_SHADOW_TITLE_TEXT_SPRITES 10
     #define NUM_PAUSE_TEXT_SPRITES 3
     #define NUM_EXPLOSION_SPRITES 6
 
@@ -100,6 +101,7 @@ static void loadSpriteAssets(void)
     jo_tile scores_digits_tileset[NUM_SCORES_SPRITES] = {0};
     jo_tile cracks_tileset[NUM_CRACKS_SPRITES] = {0};
     jo_tile title_text_tileset[NUM_TITLE_TEXT_SPRITES] = {0};
+    jo_tile title_shadow_text_tileset[NUM_SHADOW_TITLE_TEXT_SPRITES] = {0};
     jo_tile pause_text_tileset[NUM_PAUSE_TEXT_SPRITES] = {0};
     jo_tile explosion_tileset[NUM_EXPLOSION_SPRITES] = {0};
 
@@ -123,6 +125,7 @@ static void loadSpriteAssets(void)
     initTileset(scores_digits_tileset, COUNTOF(scores_digits_tileset), 10, 16, 16);
     initTileset(cracks_tileset, COUNTOF(cracks_tileset), 4, 32, 32);
     initTileset(title_text_tileset, COUNTOF(title_text_tileset), 1, 224, 22);
+    initTileset(title_shadow_text_tileset, COUNTOF(title_shadow_text_tileset), 1, 224, 22);
     initTileset(pause_text_tileset, COUNTOF(pause_text_tileset), 1, 72, 12);
     initTileset(explosion_tileset, COUNTOF(explosion_tileset), 6, 72, 72);
 
@@ -187,17 +190,23 @@ static void loadSpriteAssets(void)
 
     // title screen text
     g_Assets.mode = jo_sprite_add_tga_tileset(NULL, "TEXT.TGA", palette_transparent_index, title_text_tileset, COUNTOF(title_text_tileset));
+    g_Assets.mode_s = jo_sprite_add_tga_tileset(NULL, "TEXTS.TGA", palette_transparent_index, title_shadow_text_tileset, COUNTOF(title_shadow_text_tileset));
+
     g_Assets.difficulty = g_Assets.mode + 1;
+    g_Assets.difficulty_s = g_Assets.mode_s + 1;
     g_Assets.start = g_Assets.mode + 2;
+    g_Assets.start_s = g_Assets.mode_s + 2;
 
     for(unsigned int i = 0; i < 3; i++)
     {
         g_Assets.difficulties[i] = g_Assets.mode + 3 + i;
+        g_Assets.difficulties_s[i] = g_Assets.mode_s + 3 + i;
     }
 
     for(unsigned int i = 0; i < 4; i++)
     {
         g_Assets.modes[i] = g_Assets.mode + 6 + i;
+        g_Assets.modes_s[i] = g_Assets.mode_s + 6 + i;
     }
 
     g_Assets.resume = jo_sprite_add_tga_tileset(NULL, "STEXT.TGA", palette_transparent_index, pause_text_tileset, COUNTOF(pause_text_tileset));

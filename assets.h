@@ -39,6 +39,13 @@ typedef struct _assets
     int difficulties[3];
     int start;
 
+    // shadows
+    int mode_s;
+    int modes_s[4];
+    int difficulty_s;
+    int difficulties_s[3];
+    int start_s;
+
     // grid
     int closed;
     int open;

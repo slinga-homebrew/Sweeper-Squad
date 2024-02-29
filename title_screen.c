@@ -177,16 +177,23 @@ static void drawMenu(void)
     xPos = -30;
     yPos = 90;
 
+    jo_sprite_draw3D(g_Assets.mode_s, xPos+2, yPos-2, TITLE_MENU_Z);
     jo_sprite_draw3D(g_Assets.mode, xPos, yPos, TITLE_MENU_Z);
+
+    jo_sprite_draw3D(g_Assets.modes_s[g_Game.gameMode], xPos + 110 +2, yPos-2, TITLE_MENU_Z);
     jo_sprite_draw3D(g_Assets.modes[g_Game.gameMode], xPos + 110, yPos, TITLE_MENU_Z);
 
     // Difficulty: (easy, medium, hard)
     yPos = 130;
+    jo_sprite_draw3D(g_Assets.difficulty_s, xPos+2, yPos-2, TITLE_MENU_Z);
     jo_sprite_draw3D(g_Assets.difficulty, xPos, yPos, TITLE_MENU_Z);
+
+    jo_sprite_draw3D(g_Assets.difficulties_s[g_Game.gameDifficulty], xPos + 196 +2, yPos-2, TITLE_MENU_Z);
     jo_sprite_draw3D(g_Assets.difficulties[g_Game.gameDifficulty], xPos + 196, yPos, TITLE_MENU_Z);
 
     // Start!
     yPos = 170;
+    jo_sprite_draw3D(g_Assets.start_s, xPos + 2, yPos-2, TITLE_MENU_Z);
     jo_sprite_draw3D(g_Assets.start, xPos, yPos, TITLE_MENU_Z);
 }
 
