@@ -471,7 +471,7 @@ static void drawPauseScore(void)
         xPos += 64;
 
         // player cursor
-        playerSprite = g_Assets.cursors[player->playerID];
+        playerSprite = g_Assets.cursors[g_Assets.randomizedColors[player->playerID]];
         jo_sprite_draw3D(playerSprite, xPos-4, yPos, PLAYER_Z);
         xPos += 48;
 

@@ -45,6 +45,19 @@ void drawTeamSelectGrid(void)
             jo_sprite_draw3D(sprite, x_offset, y_offset, 500);
        }
     }
+
+    for(int i = 0; i < 14; i++)
+    {
+       y_offset = -200 + 44 + (i * 28) - 20;
+       jo_sprite_draw3D(g_Assets.horizontal_line, 7, y_offset, 500);
+    }
+
+    for(int j = 0; j < 14; j++)
+    {
+       x_offset = -264 + (j * 42);
+       jo_sprite_draw3D(g_Assets.vertical_line, x_offset - 1, +4, 500);
+    }
+
 }
 
 // initializations for SSMTF screen
@@ -182,7 +195,7 @@ void teamSelect_update(void)
             for(unsigned int i = 0; i < COUNTOF(g_Players); i++)
             {
                 PPLAYER player = &g_Players[i];
-                if(player->teamSelectChoice == 6)
+                if(player->isPlaying != PLAYING)
                 {
                     // player didn't pick a team and thus isn't playing
                     player->objectState = OBJECT_STATE_INACTIVE;
@@ -312,7 +325,12 @@ bool validateTeams(void)
             explodePlayer(player, true, false);
             player->numLives = 0;
             addNonPlayerToEmptyTeam(teams, COUNTOF(teams), player, i);
+            player->isPlaying = NOT_PLAYING;
             continue;
+        }
+        else
+        {
+            player->isPlaying = PLAYING;
         }
     }
 
@@ -332,8 +350,8 @@ void updateTeamSelectPlayers(void)
         int playerX = 0;
         int playerY = 0;
 
-        playerX = -240 + (player->teamSelectChoice * 42);
-        playerY = -200 + 8 + ((i + 1) * 28);
+        playerX = -242 + (player->teamSelectChoice * 42);
+        playerY = -200 + 9 + ((i + 1) * 28);
 
         player->curPos.x = toFIXED(playerX);
         player->curPos.y = toFIXED(playerY);

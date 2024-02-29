@@ -314,7 +314,7 @@ void drawGrid(void)
 
             if(square->is_open == false && square->is_flagged)
             {
-                jo_sprite_draw3D(g_Assets.flags[square->flag], g_Grid.curPos.x + (i*width) + 1, g_Grid.curPos.y + (j*height), GRID_Z);
+                jo_sprite_draw3D(g_Assets.flags[g_Assets.randomizedColors[square->flag]], g_Grid.curPos.x + (i*width) + 1, g_Grid.curPos.y + (j*height), GRID_Z);
             }
         }
     }

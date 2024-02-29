@@ -37,38 +37,18 @@ static jo_palette* setGamePalette(void)
 // loads audio and graphic assets
 void loadAssets(void)
 {
-
-
-    //loadFontAssets();
-    loadPCMAssets();
+     loadPCMAssets();
 
     // performance optimization by ReyeMe
     jo_fs_cd("TEX");
+
     loadSpriteAssets();
-
-
 
     for(unsigned int i = 0; i < COUNTOF(g_Assets.randomizedColors); i++)
     {
         g_Assets.randomizedColors[i] = i;
     }
-    //shuffleArray((unsigned int*)&g_Assets.randomizedColors, COUNTOF(g_Assets.randomizedColors));
-
-    /*
-    for(unsigned int i = 0; i < COUNTOF(g_Game.randomizedBalloons); i++)
-    {
-        g_Game.randomizedBalloons[i] = i;
-    }
-
-    for(unsigned int i = 0; i < COUNTOF(g_Game.randomizedFish); i++)
-    {
-        g_Game.randomizedFish[i] = i;
-    }
-
-
-    shuffleArray((unsigned int*)&g_Game.randomizedBalloons, COUNTOF(g_Game.randomizedBalloons));
-    shuffleArray((unsigned int*)&g_Game.randomizedFish, COUNTOF(g_Game.randomizedFish));
-    */
+    shuffleArray((unsigned int*)&g_Assets.randomizedColors, COUNTOF(g_Assets.randomizedColors));
 
     // back to root dir
     jo_fs_cd("..");
@@ -151,14 +131,12 @@ static void loadSpriteAssets(void)
     {
         g_Assets.cursors[i] = g_Assets.cursors[0] + i;
     }
-    //shuffleArray((unsigned int*)g_Assets.cursors, COUNTOF(g_Assets.cursors));
 
     g_Assets.flags[0] = jo_sprite_add_tga_tileset(NULL, "FLAGS.TGA", palette_transparent_index, flags_tileset, COUNTOF(flags_tileset));
     for(unsigned int i = 0; i < 12; i++)
     {
         g_Assets.flags[i] = g_Assets.flags[0] + i;
     }
-    //shuffleArray((unsigned int*) g_Assets.flags, COUNTOF(g_Assets.flags));
 
     g_Assets.flags2[0] = jo_sprite_add_tga_tileset(NULL, "FLAGS2.TGA", palette_transparent_index, flags_tileset, COUNTOF(flags_tileset));
     for(unsigned int i = 0; i < 12; i++)
@@ -231,4 +209,8 @@ static void loadSpriteAssets(void)
     {
         g_Assets.explosions[i] = g_Assets.explosions[0] + i;
     }
+
+    g_Assets.horizontal_line = jo_sprite_add_tga(NULL, "TS_HOR.TGA", palette_transparent_index);
+    g_Assets.vertical_line = jo_sprite_add_tga(NULL, "TS_VER.TGA", palette_transparent_index);
+
 }

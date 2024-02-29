@@ -151,8 +151,8 @@ static void drawScore(void)
             xPos += 196;
         }
 
-        unsigned int color = scores[i].team_id;
-        unsigned int score  =  scores[i].points;
+        unsigned int color = g_Assets.randomizedColors[scores[i].team_id];
+        unsigned int score = scores[i].points;
         convertNumberToDigits(score, &digit1, &digit2, &digit3);
 
         jo_sprite_draw3D(g_Assets.scores[color][digit1], xPos + (letterSpacing*0), yPos, SCORE_Z);

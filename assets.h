@@ -87,6 +87,10 @@ typedef struct _assets
     int retry;
     int exit;
 
+    // team selection
+    int horizontal_line;
+    int vertical_line;
+
     // audio assets
     jo_sound crackPCM;
     jo_sound explodePCM;

@@ -484,7 +484,7 @@ void drawPlayerSprite(PPLAYER player)
     int playerSprite = 0;
     int crackSprite = 0;
 
-    playerSprite = g_Assets.cursors[player->playerID];
+    playerSprite = g_Assets.cursors[g_Assets.randomizedColors[player->playerID]];
 
     // don't draw dead players
     if(player->subState == PLAYER_STATE_DEAD)
